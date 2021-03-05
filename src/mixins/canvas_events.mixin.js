@@ -93,7 +93,7 @@
       this._onTouchMove = this._onTouchMove.bind(this);
       this._onMouseUp = this._onMouseUp.bind(this);
       this._onTouchEnd = this._onTouchEnd.bind(this);
-      this._onResize = this._onResize.bind(this);
+      // this._onResize = this._onResize.bind(this);
       this._onGesture = this._onGesture.bind(this);
       this._onDrag = this._onDrag.bind(this);
       this._onShake = this._onShake.bind(this);

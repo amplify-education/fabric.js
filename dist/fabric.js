@@ -12458,7 +12458,7 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       this._onTouchMove = this._onTouchMove.bind(this);
       this._onMouseUp = this._onMouseUp.bind(this);
       this._onTouchEnd = this._onTouchEnd.bind(this);
-      this._onResize = this._onResize.bind(this);
+      // this._onResize = this._onResize.bind(this);
       this._onGesture = this._onGesture.bind(this);
       this._onDrag = this._onDrag.bind(this);
       this._onShake = this._onShake.bind(this);
@@ -15002,9 +15002,12 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
     },
 
     /**
-     * Remove cacheCanvas and its dimensions from the objects
+     * Remove cachedCanvas and its dimensions from the objects.
      */
     _removeCacheCanvas: function() {
+      if (this._cacheCanvas) {
+        this._cacheCanvas.dispose();
+      }
       this._cacheCanvas = null;
       this.cacheWidth = 0;
       this.cacheHeight = 0;

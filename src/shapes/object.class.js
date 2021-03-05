@@ -1090,9 +1090,12 @@
     },
 
     /**
-     * Remove cacheCanvas and its dimensions from the objects
+     * Remove cachedCanvas and its dimensions from the objects.
      */
     _removeCacheCanvas: function() {
+      if (this._cacheCanvas) {
+        this._cacheCanvas.dispose();
+      }
       this._cacheCanvas = null;
       this.cacheWidth = 0;
       this.cacheHeight = 0;

@@ -787,8 +787,10 @@
           canvas.height = Math.ceil(height + additionalHeight);
         }
         else {
-          this._cacheContext.setTransform(1, 0, 0, 1, 0, 0);
-          this._cacheContext.clearRect(0, 0, canvas.width, canvas.height);
+          if (this._cacheContext) {
+            this._cacheContext.setTransform(1, 0, 0, 1, 0, 0);
+            this._cacheContext.clearRect(0, 0, canvas.width, canvas.height);
+          }
         }
         drawingWidth = dims.x / 2;
         drawingHeight = dims.y / 2;

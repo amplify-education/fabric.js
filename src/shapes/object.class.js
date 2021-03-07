@@ -796,8 +796,10 @@
         this.cacheTranslationY = Math.round(canvas.height / 2 - drawingHeight) + drawingHeight;
         this.cacheWidth = width;
         this.cacheHeight = height;
-        this._cacheContext.translate(this.cacheTranslationX, this.cacheTranslationY);
-        this._cacheContext.scale(zoomX, zoomY);
+        if (this._cacheContext) {
+          this._cacheContext.translate(this.cacheTranslationX, this.cacheTranslationY);
+          this._cacheContext.scale(zoomX, zoomY);
+        }
         this.zoomX = zoomX;
         this.zoomY = zoomY;
         return true;

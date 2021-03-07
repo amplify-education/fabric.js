@@ -1754,7 +1754,17 @@
       this._iTextInstances = null;
       this.contextContainer = null;
       fabric.util.cleanUpJsdomNode(this.lowerCanvasEl);
+      if (this.lowerCanvasEl) {
+        this.lowerCanvasEl.width = 0;
+        this.lowerCanvasEl.height = 0;
+      }
+
       this.lowerCanvasEl = undefined;
+
+      if (this.cacheCanvasEl) {
+        this.cacheCanvasEl.width = 0;
+        this.cacheCanvasEl.height = 0;
+      }
       return this;
     },
 

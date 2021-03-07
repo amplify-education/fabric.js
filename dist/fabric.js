@@ -9871,7 +9871,17 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       this._iTextInstances = null;
       this.contextContainer = null;
       fabric.util.cleanUpJsdomNode(this.lowerCanvasEl);
+      if (this.lowerCanvasEl) {
+        this.lowerCanvasEl.width = 0;
+        this.lowerCanvasEl.height = 0;
+      }
+
       this.lowerCanvasEl = undefined;
+
+      if (this.cacheCanvasEl) {
+        this.cacheCanvasEl.width = 0;
+        this.cacheCanvasEl.height = 0;
+      }
       return this;
     },
 
@@ -12099,6 +12109,14 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       this.removeListeners();
       wrapper.removeChild(this.upperCanvasEl);
       wrapper.removeChild(this.lowerCanvasEl);
+      if (this.upperCanvasEl) {
+        this.upperCanvasEl.width = 0;
+        this.upperCanvasEl.height = 0;
+      }
+      if (this.lowerCanvasEl) {
+        this.lowerCanvasEl.width = 0;
+        this.lowerCanvasEl.height = 0;
+      }
       this.contextCache = null;
       this.contextTop = null;
       this.contextTextbox = null;

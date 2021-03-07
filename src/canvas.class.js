@@ -1205,6 +1205,14 @@
       this.removeListeners();
       wrapper.removeChild(this.upperCanvasEl);
       wrapper.removeChild(this.lowerCanvasEl);
+      if (this.upperCanvasEl) {
+        this.upperCanvasEl.width = 0;
+        this.upperCanvasEl.height = 0;
+      }
+      if (this.lowerCanvasEl) {
+        this.lowerCanvasEl.width = 0;
+        this.lowerCanvasEl.height = 0;
+      }
       this.contextCache = null;
       this.contextTop = null;
       this.contextTextbox = null;

@@ -230,7 +230,8 @@
       var width = this.width + this.padding,
           height = this.height + this.padding;
       ctx.save();
-      ctx.strokeStyle = styleOverride.indicationBorderColor || this.indicationBorderColor;
+      //ctx.strokeStyle = styleOverride.indicationBorderColor || this.indicationBorderColor;
+      ctx.strokeStyle = 'rgba(0, 0 ,200,1)';
       ctx.lineWidth = 1 * this.borderScaleFactor;
       ctx.strokeRect(
         -width / 2,

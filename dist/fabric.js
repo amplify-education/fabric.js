@@ -13255,7 +13255,7 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       this._resetTransformEventData();
       this._pointer = this.getPointer(e, true);
       this._absolutePointer = this.restorePointerVpt(this._pointer);
-      this._target = this._currentTransform ? this._currentTransform.target : this.findTarget(e) || null;
+      this._target = this._currentTransform ? this._currentTransform.target : (this.releaseEventTargetSubstitutor(e) || this.findTarget(e)) || null;
     },
 
     /**
@@ -13421,6 +13421,39 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
         this._isCurrentlyDrawing = false;
         this.isDrawingMode = false;
         this.setCursor(this.defaultCursor);
+      }
+    },
+
+    /**
+     * Method to set Event target substitutor
+     * @param {fabric.Object} target Event target, it will replace original one once Event is fired
+     * @param {String} eventType Event type (mousedown, mouseover, etc)
+     */
+    setEventTargetSubstitutor: function(target, eventType) {
+      this.targetSubstitutor = target;
+      this.targetSubstitutorEventType = eventType;
+    },
+
+    /**
+     * Method to return Event target substitutor set before and clean the value
+     * @param {Event} e Event
+     */
+    releaseEventTargetSubstitutor: function(e) {
+      if (this.targetSubstitutor && e.type === this.targetSubstitutorEventType) {
+        var targetSubstitutor = this.targetSubstitutor;
+        this.cleanEventTargetSubstitutor();
+        return targetSubstitutor;
+      }
+      return null
+    },
+
+    /**
+     * Method to clean Event target substitutor if it was set before
+     */
+    cleanEventTargetSubstitutor: function() {
+      if (this.targetSubstitutor) {
+        this.targetSubstitutor = null;
+        this.targetSubstitutorEventType = null;
       }
     },
 

@@ -20722,6 +20722,11 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
     imageSmoothing: true,
 
     /**
+     * Override standard Object class values
+     */
+    lockScalingFlip: true,
+
+    /**
      * Constructor
      * @param {HTMLImageElement | String} element Image element
      * @param {Object} [options] Options object

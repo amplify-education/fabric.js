@@ -103,7 +103,15 @@
      * Validation message for textbox
      * @type {fabric.Object | null}
      */
-    // warningTextObj: null,
+    warningTextObj: null,
+
+    /**
+     * Prevent the user from pressing Enter on a one-line pre-placed
+     * textbox or if 'blockedPressEnter'
+     * @type Boolean
+     * @default
+     */
+    blockedPressEnter: false,
 
     /**
      * Unlike superclass's version of this function, Textbox does not update
@@ -495,6 +503,22 @@
         textAlign: 'center',
       });
       return warningTextObj;
+    },
+
+    /**
+     * Set/update the position of validation warning after interaction with textbox.
+     * @param {String} position coords for updating ('top' or 'left')
+     */
+    setWarningPosition: function(position) {
+      if (!this.warningTextObj) {
+        return;
+      }
+      if (position === 'top') {
+        this.warningTextObj.top = this.top + this.getScaledHeight();
+      }
+      else if (position === 'left') {
+        this.warningTextObj.left = this.left + (this.width - this.warningTextObj.width) * this.scaleX / 2;
+      }
     },
 
     /**

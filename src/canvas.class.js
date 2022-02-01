@@ -396,7 +396,6 @@
       this.freeDrawingBrush = fabric.PencilBrush && new fabric.PencilBrush(this);
 
       this.calcOffset();
-      console.log(99999999);
     },
 
     /**

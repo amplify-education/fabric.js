@@ -11351,7 +11351,6 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       this.freeDrawingBrush = fabric.PencilBrush && new fabric.PencilBrush(this);
 
       this.calcOffset();
-      console.log(99999999);
     },
 
     /**
@@ -30243,7 +30242,15 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
      * Validation message for textbox
      * @type {fabric.Object | null}
      */
-    // warningTextObj: null,
+    warningTextObj: null,
+
+    /**
+     * Prevent the user from pressing Enter on a one-line pre-placed
+     * textbox or if 'blockedPressEnter'
+     * @type Boolean
+     * @default
+     */
+    blockedPressEnter: false,
 
     /**
      * Unlike superclass's version of this function, Textbox does not update
@@ -30635,6 +30642,22 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
         textAlign: 'center',
       });
       return warningTextObj;
+    },
+
+    /**
+     * Set/update the position of validation warning after interaction with textbox.
+     * @param {String} position coords for updating ('top' or 'left')
+     */
+    setWarningPosition: function(position) {
+      if (!this.warningTextObj) {
+        return;
+      }
+      if (position === 'top') {
+        this.warningTextObj.top = this.top + this.getScaledHeight();
+      }
+      else if (position === 'left') {
+        this.warningTextObj.left = this.left + (this.width - this.warningTextObj.width) * this.scaleX / 2;
+      }
     },
 
     /**

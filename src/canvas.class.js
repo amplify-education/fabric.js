@@ -396,6 +396,7 @@
       this.freeDrawingBrush = fabric.PencilBrush && new fabric.PencilBrush(this);
 
       this.calcOffset();
+      console.log(99999999);
     },
 
     /**
@@ -1375,6 +1376,15 @@
         this._activeObject.clearContextTop();
       }
       fabric.StaticCanvas.prototype.setViewportTransform.call(this, vpt);
+    },
+
+    /**
+     * @description returns the bottom canvas position
+     * @param {number} viewportOffsetY
+     * @return number
+     */
+    getCanvasBottomPosition: function (viewportOffsetY) {
+      return this.height + viewportOffsetY;
     }
   });
 

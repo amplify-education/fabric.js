@@ -12330,6 +12330,15 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
         this._activeObject.clearContextTop();
       }
       fabric.StaticCanvas.prototype.setViewportTransform.call(this, vpt);
+    },
+
+    /**
+     * @description returns the bottom canvas position
+     * @param {number} viewportOffsetY
+     * @return number
+     */
+    getCanvasBottomPosition: function (viewportOffsetY) {
+      return this.height + viewportOffsetY;
     }
   });
 
@@ -26838,6 +26847,18 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
       newText.pop();
       return { _unwrappedLines: newLines, lines: lines, graphemeText: newText, graphemeLines: newLines };
     },
+    // make sure textbox padding includes background color
+    _getNonTransformedDimensions: function() {
+      return new fabric.Point(this.width, this.height).scalarAdd(this.padding);
+    },
+
+    _calculateCurrentDimensions: function() {
+      return fabric.util.transformPoint(
+        this._getTransformedDimensions(),
+        this.getViewportTransform(),
+        true
+      );
+    },
 
     /**
      * Returns object representation of an instance
@@ -28842,6 +28863,35 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
       }
     },
 
+    /**
+     * @description returns current textbox cursor height
+     * @return number
+     */
+    _getCursorHeight: function() {
+      return (this.getScaledHeight() / this.textLines.length) - (this.padding - this.borderScaleFactor) * this.scaleX;
+    },
+
+    /**
+     * @description returns the absolute cursor position, both top and bottom
+     * @return object
+     */
+    getCurrentCursorPosition: function() {
+      if (this.isEditing) {
+        var lineIndex = this.get2DCursorLocation().lineIndex;
+        var scaledHeight = this.getScaledHeight();
+        var cursorHeight = this._getCursorHeight();
+        var currentCursorPosition = (scaledHeight / this.textLines.length) * (lineIndex + 1) + this.top;
+        return {
+          top: currentCursorPosition - cursorHeight,
+          bottom: currentCursorPosition
+        };
+      }
+      return {
+        top: 0,
+        bottom: 0
+      };
+    },
+
   });
 })();
 
@@ -29826,6 +29876,21 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     this._removeExtraneousStyles();
   },
 
+  /**
+   * @description remove specified number of characters from the end of the textbox
+   * @param {number} numberOfCharsToRemove
+   */
+  removeCharsFromEnd: function(numberOfCharsToRemove) {
+    var newValue = this.hiddenTextarea.value.slice(0, -numberOfCharsToRemove);
+    var newSelection = this.fromStringToGraphemeSelection(
+      this.hiddenTextarea.selectionStart, this.hiddenTextarea.selectionEnd, newValue
+    );
+    this.hiddenTextarea.value = newValue;
+    this.hiddenTextarea.selectionStart = newSelection.selectionStart;
+    this.hiddenTextarea.selectionEnd = newSelection.selectionEnd;
+    this.updateFromTextArea();
+  }
+
 });
 
 
@@ -30099,6 +30164,13 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     type: 'textbox',
 
     /**
+     * Default value for user-created textboxes.
+     * @type Boolean
+     * @default
+     */
+    isPreplaced: false,
+
+    /**
      * Minimum width of textbox, in pixels.
      * @type Number
      * @default
@@ -30165,6 +30237,20 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
      * @type string
      */
     resizingStrokeColor: '#9c0d63',
+
+    /**
+     * Validation message for textbox
+     * @type {fabric.Object | null}
+     */
+    warningTextObj: null,
+
+    /**
+     * Prevent the user from pressing Enter on a one-line pre-placed
+     * textbox or if 'blockedPressEnter'
+     * @type Boolean
+     * @default
+     */
+    blockedPressEnter: false,
 
     /**
      * Unlike superclass's version of this function, Textbox does not update
@@ -30519,6 +30605,58 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
         if (!linesToKeep[prop]) {
           delete this.styles[prop];
         }
+      }
+    },
+
+    isTextboxEmpty: function() {
+      return this.textLines.every(function(line) {
+        return line === '';
+      });
+    },
+
+    /**
+     * Create Textbox validation warning.
+     * @param {Object} [config] configuration options object
+     * @param {String} config.warningTextColor
+     * @param {String} config.warningHighlightingColor background color
+     * @param {String} config.warningFontSize
+     * @param {String} textContent validation message
+     * @param {Number | undefined} liftUpInPx if textbox is in limit and has max height to fit canvas, we need to remove
+     * last text line and lift up textbox to show warning
+     * @returns {Object} the warning object instance
+     */
+    defineValidationWarning: function(config, textContent, liftUpInPx) {
+      if (liftUpInPx === undefined) {
+        liftUpInPx = 0;
+      }
+      var warningTextObj = new fabric.Text(textContent, {
+        top: this.top + this.getScaledHeight() - liftUpInPx,
+        fontFamily: config.font || this.fontFamily,
+        fontWeight: config.fontWeight || this.fontWeight,
+        fill: config.warningTextColor,
+        backgroundColor: config.warningHighlightingColor,
+        fontSize: config.warningFontSize,
+        padding: config.padding || this.padding,
+        selectable: false,
+        parent: this,
+        textAlign: 'center',
+      });
+      return warningTextObj;
+    },
+
+    /**
+     * Set/update the position of validation warning after interaction with textbox.
+     * @param {String} position coords for updating ('top' or 'left')
+     */
+    setWarningPosition: function(position) {
+      if (!this.warningTextObj) {
+        return;
+      }
+      if (position === 'top') {
+        this.warningTextObj.top = this.top + this.getScaledHeight();
+      }
+      else if (position === 'left') {
+        this.warningTextObj.left = this.left + (this.width - this.warningTextObj.width) * this.scaleX / 2;
       }
     },
 

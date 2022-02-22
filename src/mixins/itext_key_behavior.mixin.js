@@ -704,4 +704,19 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     this._removeExtraneousStyles();
   },
 
+  /**
+   * @description remove specified number of characters from the end of the textbox
+   * @param {number} numberOfCharsToRemove
+   */
+  removeCharsFromEnd: function(numberOfCharsToRemove) {
+    var newValue = this.hiddenTextarea.value.slice(0, -numberOfCharsToRemove);
+    var newSelection = this.fromStringToGraphemeSelection(
+      this.hiddenTextarea.selectionStart, this.hiddenTextarea.selectionEnd, newValue
+    );
+    this.hiddenTextarea.value = newValue;
+    this.hiddenTextarea.selectionStart = newSelection.selectionStart;
+    this.hiddenTextarea.selectionEnd = newSelection.selectionEnd;
+    this.updateFromTextArea();
+  }
+
 });

@@ -1263,6 +1263,18 @@
       newText.pop();
       return { _unwrappedLines: newLines, lines: lines, graphemeText: newText, graphemeLines: newLines };
     },
+    // make sure textbox padding includes background color
+    _getNonTransformedDimensions: function() {
+      return new fabric.Point(this.width, this.height).scalarAdd(this.padding);
+    },
+
+    _calculateCurrentDimensions: function() {
+      return fabric.util.transformPoint(
+        this._getTransformedDimensions(),
+        this.getViewportTransform(),
+        true
+      );
+    },
 
     /**
      * Returns object representation of an instance

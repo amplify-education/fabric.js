@@ -25,6 +25,13 @@
     type: 'textbox',
 
     /**
+     * Default value for user-created textboxes.
+     * @type Boolean
+     * @default
+     */
+    isPreplaced: false,
+
+    /**
      * Minimum width of textbox, in pixels.
      * @type Number
      * @default
@@ -91,6 +98,20 @@
      * @type string
      */
     resizingStrokeColor: '#9c0d63',
+
+    /**
+     * Validation message for textbox
+     * @type {fabric.Object | null}
+     */
+    warningTextObj: null,
+
+    /**
+     * Prevent the user from pressing Enter on a one-line pre-placed
+     * textbox or if 'blockedPressEnter'
+     * @type Boolean
+     * @default
+     */
+    blockedPressEnter: false,
 
     /**
      * Unlike superclass's version of this function, Textbox does not update
@@ -445,6 +466,58 @@
         if (!linesToKeep[prop]) {
           delete this.styles[prop];
         }
+      }
+    },
+
+    isTextboxEmpty: function() {
+      return this.textLines.every(function(line) {
+        return line === '';
+      });
+    },
+
+    /**
+     * Create Textbox validation warning.
+     * @param {Object} [config] configuration options object
+     * @param {String} config.warningTextColor
+     * @param {String} config.warningHighlightingColor background color
+     * @param {String} config.warningFontSize
+     * @param {String} textContent validation message
+     * @param {Number | undefined} liftUpInPx if textbox is in limit and has max height to fit canvas, we need to remove
+     * last text line and lift up textbox to show warning
+     * @returns {Object} the warning object instance
+     */
+    defineValidationWarning: function(config, textContent, liftUpInPx) {
+      if (liftUpInPx === undefined) {
+        liftUpInPx = 0;
+      }
+      var warningTextObj = new fabric.Text(textContent, {
+        top: this.top + this.getScaledHeight() - liftUpInPx,
+        fontFamily: config.font || this.fontFamily,
+        fontWeight: config.fontWeight || this.fontWeight,
+        fill: config.warningTextColor,
+        backgroundColor: config.warningHighlightingColor,
+        fontSize: config.warningFontSize,
+        padding: config.padding || this.padding,
+        selectable: false,
+        parent: this,
+        textAlign: 'center',
+      });
+      return warningTextObj;
+    },
+
+    /**
+     * Set/update the position of validation warning after interaction with textbox.
+     * @param {String} position coords for updating ('top' or 'left')
+     */
+    setWarningPosition: function(position) {
+      if (!this.warningTextObj) {
+        return;
+      }
+      if (position === 'top') {
+        this.warningTextObj.top = this.top + this.getScaledHeight();
+      }
+      else if (position === 'left') {
+        this.warningTextObj.left = this.left + (this.width - this.warningTextObj.width) * this.scaleX / 2;
       }
     },
 

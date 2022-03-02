@@ -1375,6 +1375,15 @@
         this._activeObject.clearContextTop();
       }
       fabric.StaticCanvas.prototype.setViewportTransform.call(this, vpt);
+    },
+
+    /**
+     * @description returns the bottom canvas position
+     * @param {number} viewportOffsetY
+     * @return number
+     */
+    getCanvasBottomPosition: function (viewportOffsetY) {
+      return this.height + viewportOffsetY;
     }
   });
 

@@ -959,5 +959,34 @@
       }
     },
 
+    /**
+     * @description returns current textbox cursor height
+     * @return number
+     */
+    _getCursorHeight: function() {
+      return (this.getScaledHeight() / this.textLines.length) - (this.padding - this.borderScaleFactor) * this.scaleX;
+    },
+
+    /**
+     * @description returns the absolute cursor position, both top and bottom
+     * @return object
+     */
+    getCurrentCursorPosition: function() {
+      if (this.isEditing) {
+        var lineIndex = this.get2DCursorLocation().lineIndex;
+        var scaledHeight = this.getScaledHeight();
+        var cursorHeight = this._getCursorHeight();
+        var currentCursorPosition = (scaledHeight / this.textLines.length) * (lineIndex + 1) + this.top;
+        return {
+          top: currentCursorPosition - cursorHeight,
+          bottom: currentCursorPosition
+        };
+      }
+      return {
+        top: 0,
+        bottom: 0
+      };
+    },
+
   });
 })();

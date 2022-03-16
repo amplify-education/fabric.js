@@ -15,6 +15,22 @@
   var playIconOffsetX = 50;
   var playIconOffsetY = 50;
 
+  var focusStrokeOuter = '#9c0d63';
+  var focusStrokeInner = '#ffffff';
+
+  function drawFocusOnPlayButton(ctx, left, top, size) {
+    ctx.fillStyle = focusStrokeOuter;
+    ctx.beginPath();
+    ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = focusStrokeInner;
+    ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+  }
+
   if (fabric.Audio_token) {
 
     var audioTokenControls = fabric.Audio_token.prototype.controls = { };
@@ -134,6 +150,10 @@
           controlImg = fabricObject.isPlaying
             ? fabricObject.pauseControlImage
             : fabricObject.playControlImage;
+        }
+
+        if (this.focused) {
+          drawFocusOnPlayButton(ctx, left, top, size);
         }
 
         this.y = playIconY;

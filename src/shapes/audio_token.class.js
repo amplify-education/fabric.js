@@ -114,6 +114,18 @@
      * @param {Object} [options] Options object
      * @return {fabric.Audio_token} thisArg
      */
+
+    /**
+     * Color used for focusing the resizing stroke.
+     * @type string
+     */
+    focusStrokeOuter: '#9c0d63',
+
+    /**
+     * Color used for focusing the inner resizing stroke.
+     * @type string
+     */
+    focusStrokeInner: '#ffffff',
     initialize: function(mediaID, options) {
       options || (options = { });
       this.filters = [];

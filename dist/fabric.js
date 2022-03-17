@@ -30970,6 +30970,18 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
      * @param {Object} [options] Options object
      * @return {fabric.Audio_token} thisArg
      */
+
+    /**
+     * Color used for focusing the resizing stroke.
+     * @type string
+     */
+    focusStrokeOuter: '#9c0d63',
+
+    /**
+     * Color used for focusing the inner resizing stroke.
+     * @type string
+     */
+    focusStrokeInner: '#ffffff',
     initialize: function(mediaID, options) {
       options || (options = { });
       this.filters = [];
@@ -31196,26 +31208,26 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
   var playIconOffsetX = 50;
   var playIconOffsetY = 50;
 
-  var focusStrokeOuter = '#9c0d63';
-  var focusStrokeInner = '#ffffff';
-
-  function drawFocusOnPlayButton(ctx, left, top, size) {
-    ctx.fillStyle = focusStrokeOuter;
-    ctx.beginPath();
-    ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.fillStyle = focusStrokeInner;
-    ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-  }
 
   if (fabric.Audio_token) {
 
     var audioTokenControls = fabric.Audio_token.prototype.controls = { };
     // create custom audio_token control for delete icon
+
+    function drawFocusOnPlayButton(ctx, left, top, size) {
+      //this is fabric audio token object here
+      ctx.fillStyle = this.focusStrokeOuter;
+      ctx.beginPath();
+      ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = this.focusStrokeInner;
+      ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+    }
+
     audioTokenControls.deleteControl = new fabric.Control({
       // delete icon x position relative to audio_token
       x: deleteIconX,
@@ -31334,7 +31346,7 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
         }
 
         if (this.focused) {
-          drawFocusOnPlayButton(ctx, left, top, size);
+          drawFocusOnPlayButton.call(fabricObject, ctx, left, top, size);
         }
 
         this.y = playIconY;

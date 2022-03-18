@@ -31216,6 +31216,7 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
 
     function drawFocusOnPlayButton(ctx, left, top, size) {
       //this is fabric audio token object here
+      ctx.save();
       ctx.fillStyle = this.focusStrokeOuter;
       ctx.beginPath();
       ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
@@ -31226,6 +31227,7 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
       ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
       ctx.closePath();
       ctx.fill();
+      ctx.restore();
     }
 
     audioTokenControls.deleteControl = new fabric.Control({

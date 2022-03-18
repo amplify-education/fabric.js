@@ -23,6 +23,7 @@
 
     function drawFocusOnPlayButton(ctx, left, top, size) {
       //this is fabric audio token object here
+      ctx.save();
       ctx.fillStyle = this.focusStrokeOuter;
       ctx.beginPath();
       ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
@@ -33,6 +34,7 @@
       ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
       ctx.closePath();
       ctx.fill();
+      ctx.restore();
     }
 
     audioTokenControls.deleteControl = new fabric.Control({

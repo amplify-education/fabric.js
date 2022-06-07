@@ -153,8 +153,8 @@
             ? fabricObject.pauseControlImage
             : fabricObject.playControlImage;
         }
-
-        if (this.focused) {
+        // todo find another way to focus fabric controls
+        if (fabricObject.navigationState === 'playing') {
           drawFocusOnPlayButton.call(fabricObject, ctx, left, top, size);
         }
 

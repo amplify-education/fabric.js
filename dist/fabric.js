@@ -7242,7 +7242,6 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
      * @return {Void}
      */
     setFocus: function() {
-      fabric.controlsUtils.clearControlsFocus();
       this.focused = true;
     },
 
@@ -31346,8 +31345,8 @@ var deleteIconSrc = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'
             ? fabricObject.pauseControlImage
             : fabricObject.playControlImage;
         }
-
-        if (this.focused) {
+        // todo find another way to focus fabric controls
+        if (fabricObject.navigationState === 'playing') {
           drawFocusOnPlayButton.call(fabricObject, ctx, left, top, size);
         }
 

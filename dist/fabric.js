@@ -30647,6 +30647,10 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     },
 
     isTextboxEmpty: function() {
+      // Check if dehydrated textboxes are empty (needed when removing empty PPTF from OD)
+      if (!this.textLines) {
+        return this.text.replace('\n','').length === 0
+      }
       return this.textLines.every(function(line) {
         return line === '';
       });

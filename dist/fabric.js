@@ -6886,6 +6886,12 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
     return moveX || moveY;
   }
 
+  function clearControlsFocus() {
+    Object.values(fabric.Object.prototype.controls).forEach(function (control) {
+      control.removeFocus();
+    });
+  }
+
   controls.scaleCursorStyleHandler = scaleCursorStyleHandler;
   controls.skewCursorStyleHandler = skewCursorStyleHandler;
   controls.scaleSkewCursorStyleHandler = scaleSkewCursorStyleHandler;
@@ -6904,6 +6910,7 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
   controls.fireEvent = fireEvent;
   controls.wrapWithFixedAnchor = wrapWithFixedAnchor;
   controls.getLocalPoint = getLocalPoint;
+  controls.clearControlsFocus = clearControlsFocus;
   fabric.controlsUtils = controls;
 
 })(typeof exports !== 'undefined' ? exports : this);
@@ -6975,7 +6982,7 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
     ctx.fillStyle = styleOverride.cornerColor || fabricObject.cornerColor;
     ctx.strokeStyle = styleOverride.strokeCornerColor || fabricObject.strokeCornerColor;
     // this is still wrong
-    ctx.lineWidth = fabricObject.navigationState === 'resizing' ? 2 : 1;
+    ctx.lineWidth = this.focused ? 2 : 1;
     ctx.translate(left, top);
     ctx.rotate(degreesToRadians(fabricObject.angle));
     // this does not work, and fixed with ( && ) does not make sense.
@@ -6988,7 +6995,7 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
 
     // AB: this one will add a focus border for control when the fabric object is in some specific state
     // right now there is only one state where control can have that border, the resizing one
-    if (fabricObject.navigationState === 'resizing') {
+    if (this.focused) {
       ctx.strokeStyle = resizingStroke;
       ctx.strokeRect(-sizeBy2 - 2, -sizeBy2 - 2, size + 4, size + 4);
     }
@@ -7027,6 +7034,14 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
      * @default true
      */
     visible: true,
+
+    /**
+     * keep track of focus.
+     * from the controlset.
+     * @type {Boolean}
+     * @default false
+     */
+    focused: false,
 
     /**
      * Name of the action that the controll will likely execute.
@@ -7221,6 +7236,23 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       this.visible = visibility;
     },
 
+
+    /**
+     * Clears focus on all controls, and sets control focus
+     * @return {Void}
+     */
+    setFocus: function() {
+      fabric.controlsUtils.clearControlsFocus();
+      this.focused = true;
+    },
+
+    /**
+     * Removes controls focus
+     * @return {Void}
+     */
+    removeFocus: function() {
+      this.focused = false;
+    },
 
     positionHandler: function(dim, finalMatrix /*, fabricObject, currentControl */) {
       var point = fabric.util.transformPoint({
@@ -20773,6 +20805,12 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
      * @type Array
      */
     stateProperties: fabric.Object.prototype.stateProperties.concat('cropX', 'cropY'),
+
+    /**
+     * Color used for focusing the resizing stroke.
+     * @type string
+     */
+    resizingStrokeColor: '#9c0d63',
 
     /**
      * key used to retrieve the texture representing this image

@@ -164,6 +164,18 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       return;
     }
 
+    var isAtMaxLengthWord = this.dynamicMinWidth > this.width
+    if (isAtMaxLengthWord) {
+      this.hiddenTextarea.value = this.text;
+      this.dynamicMinWidth = this.width;
+      this.fire('changed');
+      if (this.canvas) {
+        this.canvas.fire('text:changed', { target: this, options: { 'isAtMaxLengthWord': isAtMaxLengthWord } });
+        this.canvas.requestRenderAll();
+      }
+      return;
+    }
+
     var textareaSelection = this.fromStringToGraphemeSelection(
       this.hiddenTextarea.selectionStart,
       this.hiddenTextarea.selectionEnd,

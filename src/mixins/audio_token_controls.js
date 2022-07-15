@@ -15,10 +15,28 @@
   var playIconOffsetX = 50;
   var playIconOffsetY = 50;
 
+
   if (fabric.Audio_token) {
 
     var audioTokenControls = fabric.Audio_token.prototype.controls = { };
     // create custom audio_token control for delete icon
+
+    function drawFocusOnPlayButton(ctx, left, top, size) {
+      //this is fabric audio token object here
+      ctx.save();
+      ctx.fillStyle = this.focusStrokeOuter;
+      ctx.beginPath();
+      ctx.arc(left, top, size / 2 + 6, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = this.focusStrokeInner;
+      ctx.arc(left, top, size / 2 + 3, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
     audioTokenControls.deleteControl = new fabric.Control({
       // delete icon x position relative to audio_token
       x: deleteIconX,
@@ -134,6 +152,10 @@
           controlImg = fabricObject.isPlaying
             ? fabricObject.pauseControlImage
             : fabricObject.playControlImage;
+        }
+        // todo find another way to focus fabric controls
+        if (fabricObject.navigationState === 'playing') {
+          drawFocusOnPlayButton.call(fabricObject, ctx, left, top, size);
         }
 
         this.y = playIconY;

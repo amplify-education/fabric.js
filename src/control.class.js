@@ -231,7 +231,6 @@
      * @return {Void}
      */
     setFocus: function() {
-      fabric.controlsUtils.clearControlsFocus();
       this.focused = true;
     },
 

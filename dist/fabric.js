@@ -29373,18 +29373,6 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       return;
     }
 
-    var isAtMaxLengthWord = this.dynamicMinWidth > this.width
-    if (isAtMaxLengthWord) {
-      this.hiddenTextarea.value = this.text;
-      this.dynamicMinWidth = this.width;
-      this.fire('changed');
-      if (this.canvas) {
-        this.canvas.fire('text:changed', { target: this, options: { 'isAtMaxLengthWord': isAtMaxLengthWord } });
-        this.canvas.requestRenderAll();
-      }
-      return;
-    }
-
     var textareaSelection = this.fromStringToGraphemeSelection(
       this.hiddenTextarea.selectionStart,
       this.hiddenTextarea.selectionEnd,
@@ -29405,6 +29393,17 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       }
     }
     insertedText = nextText.slice(textareaSelection.selectionEnd - charDiff, textareaSelection.selectionEnd);
+
+    if (this.presumableWidth > this.width) {
+      this.hiddenTextarea.value = this.text;
+      this.fire('changed');
+      if (this.canvas) {
+        this.canvas.fire('text:changed', { target: this });
+        this.canvas.requestRenderAll();
+      }
+      return;
+    }
+
     if (removedText && removedText.length) {
       if (insertedText.length) {
         // let's copy some style before deleting.
@@ -30316,6 +30315,7 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       this._clearCache();
       // clear dynamicMinWidth as it will be different after we re-wrap line
       this.dynamicMinWidth = 0;
+      this.presumableWidth = 0;
       // wrap lines
       this._styleMap = this._generateStyleMap(this._splitText());
       // if after wrapping, the width is smaller than dynamicMinWidth, change the width and re-wrap
@@ -30586,6 +30586,10 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
 
       if (largestWordWidth + reservedSpace > this.dynamicMinWidth) {
         this.dynamicMinWidth = largestWordWidth - additionalSpace + reservedSpace;
+      }
+      var newPresumableWidth = largestWordWidth - additionalSpace + reservedSpace;
+      if (newPresumableWidth > this.presumableWidth) {
+        this.presumableWidth = newPresumableWidth;
       }
       return graphemeLines;
     },

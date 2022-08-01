@@ -184,6 +184,17 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       }
     }
     insertedText = nextText.slice(textareaSelection.selectionEnd - charDiff, textareaSelection.selectionEnd);
+
+    if (this.presumableWidth > this.width) {
+      this.hiddenTextarea.value = this.text;
+      this.fire('changed');
+      if (this.canvas) {
+        this.canvas.fire('text:changed', { target: this });
+        this.canvas.requestRenderAll();
+      }
+      return;
+    }
+
     if (removedText && removedText.length) {
       if (insertedText.length) {
         // let's copy some style before deleting.

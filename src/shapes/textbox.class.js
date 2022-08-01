@@ -128,6 +128,7 @@
       this._clearCache();
       // clear dynamicMinWidth as it will be different after we re-wrap line
       this.dynamicMinWidth = 0;
+      this.presumableWidth = 0;
       // wrap lines
       this._styleMap = this._generateStyleMap(this._splitText());
       // if after wrapping, the width is smaller than dynamicMinWidth, change the width and re-wrap
@@ -398,6 +399,10 @@
 
       if (largestWordWidth + reservedSpace > this.dynamicMinWidth) {
         this.dynamicMinWidth = largestWordWidth - additionalSpace + reservedSpace;
+      }
+      var newPresumableWidth = largestWordWidth - additionalSpace + reservedSpace;
+      if (newPresumableWidth > this.presumableWidth) {
+        this.presumableWidth = newPresumableWidth;
       }
       return graphemeLines;
     },

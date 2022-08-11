@@ -14299,6 +14299,13 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
     deleteControlSize: 36,
 
     /**
+     * Size in pixels of the (before any scaling) touch area of the moving control
+     * @type Number
+     * @default
+     */
+    movingControlSize: 44,
+
+    /**
      * Option to ignore the object scaling for determining touch area of controls.
      * Useful for objects which can be scaled by the user if we DONT want the control
      * to scale along with the object.
@@ -17620,6 +17627,9 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
             break;
           case 'playControl':
             controlSize = (this.playControlSize || this.cornerSize) * scale;
+            break;
+          case 'movingControl':
+            controlSize = (this.movingControlSize || this.cornerSize) * scale;
             break;
           default:
             controlSize = this.cornerSize * scale;

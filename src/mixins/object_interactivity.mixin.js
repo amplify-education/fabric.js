@@ -91,6 +91,9 @@
           case 'playControl':
             controlSize = (this.playControlSize || this.cornerSize) * scale;
             break;
+          case 'movingControl':
+            controlSize = (this.movingControlSize || this.cornerSize) * scale;
+            break;
           default:
             controlSize = this.cornerSize * scale;
         }

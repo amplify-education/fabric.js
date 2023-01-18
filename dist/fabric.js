@@ -15361,7 +15361,11 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
       }
       this._render(ctx);
       this._drawClipPath(ctx);
-      if (this.canvas._indicatedObject === this) {
+
+      // Adding check that this.canvas is set because it's empty when 
+      // clicking on and redrawing purple border around text boxes. 
+      // That was causing crash bugs when clicking purple border. [QZ-174, JK]
+      if (this.canvas && this.canvas._indicatedObject === this) {
         this.drawIndication(ctx);
       }
       this.fill = originalFill;

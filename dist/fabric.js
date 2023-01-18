@@ -9073,13 +9073,18 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       ctx.save();
       //apply viewport transform once for all rendering process
       ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5]);
+
+      // Fix bug where this.canvas not being set causes crash bug
+      // after clicking on purple textbox focus border.
+      // Not sure the root cause of this issue. [QZ-157, JK
+      if (!this.canvas) {
+        this.canvas = ctx.canvas;
+      }
+
       this._renderObjects(ctx, objects);
       ctx.restore();
       
-      // Added check to this.canvas because clicking on purple textbox border in a certain
-      // way would call this with empty this.canvas, causing crash bug.
-      // Not sure the root cause. [QZ-174, JK] 
-      if (this.canvas && !this.controlsAboveOverlay && this.interactive) {
+      if (!this.controlsAboveOverlay && this.interactive) {
         this.drawControls(ctx);
       }
       if (path) {
@@ -15366,10 +15371,7 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
       this._render(ctx);
       this._drawClipPath(ctx);
 
-      // Adding check that this.canvas is set because it's empty when 
-      // clicking on and redrawing purple border around text boxes. 
-      // That was causing crash bugs when clicking purple border. [QZ-174, JK]
-      if (this.canvas && this.canvas._indicatedObject === this) {
+      if (this.canvas._indicatedObject === this) {
         this.drawIndication(ctx);
       }
       this.fill = originalFill;

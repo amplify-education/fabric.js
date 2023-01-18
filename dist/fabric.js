@@ -9075,7 +9075,11 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5]);
       this._renderObjects(ctx, objects);
       ctx.restore();
-      if (!this.controlsAboveOverlay && this.interactive) {
+      
+      // Added check to this.canvas because clicking on purple textbox border in a certain
+      // way would call this with empty this.canvas, causing crash bug.
+      // Not sure the root cause. [QZ-174, JK] 
+      if (this.canvas && !this.controlsAboveOverlay && this.interactive) {
         this.drawControls(ctx);
       }
       if (path) {

@@ -1115,6 +1115,14 @@
     _fireSelectionEvents: function(oldObjects, e) {
       var somethingChanged = false, objects = this.getActiveObjects(),
           added = [], removed = [], opt = { e: e };
+
+      // [QZ-174 JK] Default behavior is not properly handing when focus markup 
+      // (aka purple box around selection) is clicked, causing crash bug prior to this fix.
+      // Fix mimics clicking in the white space of the page, essentially ignoring the click on the focus markup
+      if (objects.length === 1 && objects[0].type === 'focusMarkup') {
+        objects = [];
+      }
+
       oldObjects.forEach(function(oldObject) {
         if (objects.indexOf(oldObject) === -1) {
           somethingChanged = true;

@@ -9073,17 +9073,8 @@ fabric.ElementsParser = function(elements, callback, options, reviver, parsingOp
       ctx.save();
       //apply viewport transform once for all rendering process
       ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5]);
-
-      // Fix bug where this.canvas not being set causes crash bug
-      // after clicking on purple textbox focus border.
-      // Not sure the root cause of this issue. [QZ-157, JK
-      if (!this.canvas) {
-        this.canvas = ctx.canvas;
-      }
-
       this._renderObjects(ctx, objects);
       ctx.restore();
-      
       if (!this.controlsAboveOverlay && this.interactive) {
         this.drawControls(ctx);
       }
@@ -15378,7 +15369,6 @@ fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.Stati
       }
       this._render(ctx);
       this._drawClipPath(ctx);
-
       if (this.canvas._indicatedObject === this) {
         this.drawIndication(ctx);
       }

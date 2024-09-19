@@ -311,6 +311,12 @@
     MIN_TEXT_WIDTH: 2,
 
     /**
+     * if true, this means textbox is empty and displays placeholder text like "Type here..."
+     * will be set as true during initialization if options.placeholder is passed
+     */
+    placeholderMode: false,
+
+    /**
      * Constructor
      * @param {String} text Text string
      * @param {Object} [options] Options object
@@ -318,9 +324,22 @@
      */
     initialize: function(text, options) {
       this.styles = options ? (options.styles || { }) : { };
+
+      if (text === '' && options.placeholder) {
+        text = options.placeholder;
+        this.placeholderMode = true;
+      }
+
       this.text = text;
       this.__skipDimension = true;
       this.callSuper('initialize', options);
+
+      if (this.placeholderMode && options.placeholderColor) {
+        // keep original color and set color passed in options.placeholderColor
+        this.originalColor = options.fill;
+        this.fill = options.placeholderColor;
+      }
+
       this.__skipDimension = false;
       this.initDimensions();
       this.setCoords();

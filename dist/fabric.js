@@ -25950,6 +25950,12 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
     MIN_TEXT_WIDTH: 2,
 
     /**
+     * if true, this means textbox is empty and displays placeholder text like "Type here..."
+     * will be set as true during initialization if options.placeholder is passed
+     */
+    placeholderMode: false,
+
+    /**
      * Constructor
      * @param {String} text Text string
      * @param {Object} [options] Options object
@@ -25957,9 +25963,22 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
      */
     initialize: function(text, options) {
       this.styles = options ? (options.styles || { }) : { };
+
+      if (text === '' && options.placeholder) {
+        text = options.placeholder;
+        this.placeholderMode = true;
+      }
+
       this.text = text;
       this.__skipDimension = true;
       this.callSuper('initialize', options);
+
+      if (this.placeholderMode && options.placeholderColor) {
+        // keep original color and set color passed in options.placeholderColor
+        this.originalColor = options.fill;
+        this.fill = options.placeholderColor;
+      }
+
       this.__skipDimension = false;
       this.initDimensions();
       this.setCoords();
@@ -29380,15 +29399,32 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
         selectionStart = this.selectionStart, selectionEnd = this.selectionEnd,
         selection = selectionStart !== selectionEnd,
         copiedStyle, removeFrom, removeTo;
+
     if (this.hiddenTextarea.value === '') {
       this.styles = { };
       this.updateFromTextArea();
+
+      this.text = this.placeholder;
+      this.hiddenTextarea.value = this.placeholder;
+      this.placeholderMode = true;
+      this.fill = this.placeholderColor || this.fill;
+
       this.fire('changed');
       if (this.canvas) {
         this.canvas.fire('text:changed', { target: this });
         this.canvas.requestRenderAll();
       }
       return;
+    }
+
+    // if there is some text, we need to remove the placeholder
+    if (this.placeholderMode) {
+      // if there was placeholder and user started typing, e.g. typed letter "d",
+      // we need to replace placeholder text with whatever user typed, that would be in e.data
+      this.text = e.data;
+      this.hiddenTextarea.value = e.data;
+      this.placeholderMode = false;
+      this.fill = this.originalColor || this.fill;
     }
 
     var textareaSelection = this.fromStringToGraphemeSelection(

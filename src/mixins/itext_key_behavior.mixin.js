@@ -158,10 +158,9 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
       this.styles = { };
       this.updateFromTextArea();
 
-      this.text = this.placeholder;
-      this.hiddenTextarea.value = this.placeholder;
+      this.text = this.placeholder || '';
+      this.hiddenTextarea.value = this.placeholder || '';
       this.placeholderMode = true;
-      this.fill = this.placeholderColor || this.fill;
 
       this.fire('changed');
       if (this.canvas) {
@@ -175,10 +174,9 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     if (this.placeholderMode) {
       // if there was placeholder and user started typing, e.g. typed letter "d",
       // we need to replace placeholder text with whatever user typed, that would be in e.data
-      this.text = e.data;
-      this.hiddenTextarea.value = e.data;
+      this.text = e.data || '';
+      this.hiddenTextarea.value = e.data || '';
       this.placeholderMode = false;
-      this.fill = this.originalColor || this.fill;
     }
 
     var textareaSelection = this.fromStringToGraphemeSelection(

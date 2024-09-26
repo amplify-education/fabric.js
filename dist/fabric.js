@@ -25926,7 +25926,6 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
       'linethrough',
       'deltaY',
       'textBackgroundColor',
-      'placeholderColor',
     ],
 
     /**
@@ -25965,8 +25964,8 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
     initialize: function(text, options) {
       this.styles = options ? (options.styles || { }) : { };
 
-      if (text === '' && options.placeholder) {
-        text = options.placeholder;
+      if (text === '' && this.placeholder) {
+        text = this.placeholder;
         this.placeholderMode = true;
       }
 
@@ -26274,8 +26273,8 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
      * @param {Object} [decl]
      */
     _applyCharStyles: function(method, ctx, lineIndex, charIndex, styleDeclaration) {
-      if (this.placeholderMode && styleDeclaration.placeholderColor) {
-        styleDeclaration.fill = styleDeclaration.placeholderColor;
+      if (this.placeholderMode && this.placeholderColor) {
+        styleDeclaration.fill = this.placeholderColor;
       }
       this._setFillStyles(ctx, styleDeclaration);
       this._setStrokeStyles(ctx, styleDeclaration);
@@ -30711,9 +30710,12 @@ fabric.util.object.extend(fabric.IText.prototype, /** @lends fabric.IText.protot
     },
 
     isTextboxEmpty: function() {
+      if (this.placeholderMode) {
+        return true;
+      }
       // Check if dehydrated textboxes are empty (needed when removing empty PPTF from OD)
       if (!this.textLines) {
-        return this.text.replace('\n','').length === 0
+        return this.text.replace('\n','').length === 0;
       }
       return this.textLines.every(function(line) {
         return line === '';

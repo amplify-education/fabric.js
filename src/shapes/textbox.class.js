@@ -475,9 +475,12 @@
     },
 
     isTextboxEmpty: function() {
+      if (this.placeholderMode) {
+        return true;
+      }
       // Check if dehydrated textboxes are empty (needed when removing empty PPTF from OD)
       if (!this.textLines) {
-        return this.text.replace('\n','').length === 0
+        return this.text.replace('\n','').length === 0;
       }
       return this.textLines.every(function(line) {
         return line === '';

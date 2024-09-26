@@ -287,7 +287,6 @@
       'linethrough',
       'deltaY',
       'textBackgroundColor',
-      'placeholderColor',
     ],
 
     /**
@@ -326,8 +325,8 @@
     initialize: function(text, options) {
       this.styles = options ? (options.styles || { }) : { };
 
-      if (text === '' && options.placeholder) {
-        text = options.placeholder;
+      if (text === '' && this.placeholder) {
+        text = this.placeholder;
         this.placeholderMode = true;
       }
 
@@ -635,8 +634,8 @@
      * @param {Object} [decl]
      */
     _applyCharStyles: function(method, ctx, lineIndex, charIndex, styleDeclaration) {
-      if (this.placeholderMode && styleDeclaration.placeholderColor) {
-        styleDeclaration.fill = styleDeclaration.placeholderColor;
+      if (this.placeholderMode && this.placeholderColor) {
+        styleDeclaration.fill = this.placeholderColor;
       }
       this._setFillStyles(ctx, styleDeclaration);
       this._setStrokeStyles(ctx, styleDeclaration);
